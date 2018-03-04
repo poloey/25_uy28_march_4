@@ -4,12 +4,12 @@ $con = new PDO('mysql:dbname=feni;host=localhost', 'root', '');
 $statement = $con->prepare('select * from teachers');
 if (isset($_GET['q'])) {
   $q = $_GET['q'];
-  $type = $_GET['type'];
-  if ($type === 'email') {
-    $statement = $con->prepare("select * from teachers where email like '%$q%'");
-  }else {
-    $statement = $con->prepare("select * from teachers where name like '%$q%'");
-  }
+  $statement = $con->prepare("
+    select * from teachers where
+    name like '%$q%' or
+    email like '%$q%'
+
+    ");
 }
 $statement->execute();
 $teachers = $statement->fetchAll();
@@ -35,12 +35,6 @@ $teachers = $statement->fetchAll();
           <div class="form-group">
             <div class="input-group">
               <input type="text" class="form-control" name="q">
-              <div class="input-group-append">
-                <select name="type" class="form-control" id="">
-                  <option value="name">Name</option>
-                  <option value="email">Email</option>
-                </select>
-              </div>
               <div class="input-group-append">
                 <button type="submit" class="btn btn-info">Search</button>
               </div>
